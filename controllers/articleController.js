@@ -11,7 +11,18 @@ const getAllArticles = async (req, res) => {
   }
 };
 
-// 2. Créer un nouvel article lié à un auteur
+// 2. Récupérer les articles de l'utilisateur connecté
+const getMyArticles = async (req, res) => {
+  try {
+    const articles = await Article.find({ author: req.user._id }).populate("author", "name email");
+
+    return res.status(200).json(articles);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+// 3. Créer un nouvel article lié à un auteur
 const createArticle = async (req, res) => {
   try {
     const { title, content, authorId } = req.body;
@@ -115,9 +126,10 @@ const deleteArticle = async (req, res) => {
 };
 
 module.exports = {
-  getAllArticles,
-  createArticle,
-  getArticleById,
-  updateArticle,
-  deleteArticle
+    getAllArticles,
+    getMyArticles,
+    getArticleById,
+    createArticle,
+    updateArticle,
+    deleteArticle
 };

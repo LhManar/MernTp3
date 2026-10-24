@@ -1,11 +1,25 @@
+
 const express = require("express");
-const  articleController = require("../controllers/articleController");
-const routes = express.Router();
+const router = express.Router();
 
-routes.get("/", articleController.getAllArticles);
-routes.get("/:id", articleController.getArticleById);
-routes.put('/:id', articleController.updateArticle);
-routes.post('/', articleController.createArticle);
-routes.delete('/:id', articleController.deleteArticle);
+const {
+    getAllArticles,
+    getMyArticles,
+    getArticleById,
+    createArticle,
+    updateArticle,
+    deleteArticle
+} = require("../controllers/articleController");
 
-module.exports = routes;
+const { protect } = require("../middlewares/authMiddleware");
+
+
+router.get("/", getAllArticles);
+router.get("/my-articles", protect, getMyArticles);
+router.get("/:id", getArticleById);
+
+router.post("/", protect, createArticle);
+router.put("/:id", protect, updateArticle);
+router.delete("/:id", protect, deleteArticle);
+
+module.exports = router;
